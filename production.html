@@ -311,8 +311,9 @@
     </div>
 
     <!--
-      Each single: covers load from Spotify. The play button plays Spotify's 30-second preview
-      (data-src on the <li>). Spotify and Apple Music links are the two hrefs under each cover.
+      Each song: covers load from Spotify. The play button plays Apple Music's 30-second preview,
+      looked up automatically from the song's Apple Music link when the page opens.
+      If Apple has no preview, it falls back to the Spotify preview in data-src.
     -->
     <ol class="singles">
         <li class="single track" data-src="https://p.scdn.co/mp3-preview/6639649fa5d6cbc3590918b7b62256be030538a6">
@@ -423,7 +424,7 @@
             <a href="https://music.apple.com/us/album/shining-single/1758182675" class="s-link" target="_blank" rel="noopener">Apple Music ↗</a>
           </div>
         </li>
-        <li class="single track" data-src="https://p.scdn.co/mp3-preview/ae1a39f80e717949bea314d27d818fed9d062d67">
+        <li class="single track" data-apple-track="Cyanide" data-src="https://p.scdn.co/mp3-preview/ae1a39f80e717949bea314d27d818fed9d062d67">
           <div class="cover">
             <img class="cover-img" src="https://i.scdn.co/image/ab67616d0000b273647fca72550ab90dc465bfa4" alt="Go Back to Food on the Table cover art" width="640" height="640" loading="lazy">
             <button class="play" type="button" aria-label="Play song 10 (Cyanide preview)"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
@@ -485,6 +486,45 @@
     });
 
     audio.addEventListener('ended', function () { stop(current); current = null; });
+  })();
+
+  // Swap each song's preview to Apple Music (higher quality than Spotify's).
+  // Uses Apple's public lookup; if a song has no Apple preview, the Spotify preview stays.
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.single.track'));
+    var byId = {}, ids = [];
+    cards.forEach(function (li) {
+      var a = li.querySelector('a[href*="music.apple.com"]');
+      if (!a) return;
+      var m = a.href.match(/\/(album|song)\/[^/]+\/(\d+)/);
+      if (!m) return;
+      var want = (li.getAttribute('data-apple-track') || li.querySelector('.s-title').textContent);
+      byId[m[2]] = { li: li, kind: m[1], want: norm(want) };
+      ids.push(m[2]);
+    });
+    if (!ids.length) return;
+    function norm(t) { return String(t).toLowerCase().replace(/\(.*?\)|\[.*?\]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+
+    window.__appleTracks = function (data) {
+      var results = (data && data.results) || [];
+      Object.keys(byId).forEach(function (id) {
+        var entry = byId[id], pick = null;
+        var songs = results.filter(function (r) {
+          return r.wrapperType === 'track' && r.previewUrl &&
+            (String(r.trackId) === id || String(r.collectionId) === id);
+        });
+        // exact song link, else the matching title on the single, else its first song
+        pick = songs.filter(function (r) { return String(r.trackId) === id; })[0] ||
+               songs.filter(function (r) { return norm(r.trackName) === entry.want; })[0] ||
+               songs.filter(function (r) { return norm(r.trackName).indexOf(entry.want) === 0; })[0] ||
+               songs[0];
+        if (pick) entry.li.setAttribute('data-src', pick.previewUrl);
+      });
+    };
+    var sc = document.createElement('script');
+    sc.src = 'https://itunes.apple.com/lookup?id=' + ids.join(',') + '&entity=song&country=us&limit=200&callback=__appleTracks';
+    sc.async = true;
+    document.body.appendChild(sc);
   })();
 </script>
 </body>
