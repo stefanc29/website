@@ -113,6 +113,15 @@
   .embeds { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
   .embeds iframe { width: 100%; border: 0; }
 
+  /* playable tracklist */
+  .tracks.playable .track { grid-template-columns: 90px minmax(0, 1fr) 90px 52px; }
+  .t-prog { height: 3px; margin-top: 10px; background: rgba(255,255,255,0.25); visibility: hidden; }
+  .t-prog span { display: block; height: 100%; width: 0; background: var(--yellow); }
+  .track.is-playing .t-prog, .track.is-paused .t-prog { visibility: visible; }
+  .t-time { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+  .track.is-paused .t-title { color: var(--yellow); }
+  .track.is-missing .t-time { color: var(--yellow); font-size: 12px; }
+  @media (max-width: 620px) { .tracks.playable .track { grid-template-columns: 44px minmax(0, 1fr) 48px; } .tracks.playable .t-time { display: none; } }
   .tracks.static .track { grid-template-columns: 90px minmax(0, 1fr); }
   @media (max-width: 620px) { .tracks.static .track { grid-template-columns: 52px minmax(0, 1fr); } }
   .embeds iframe { display: block; width: 100%; border: 0; background: #fff; }
@@ -319,34 +328,43 @@
       </div>
 
       <div class="music-list">
-        <!-- Tracklist for Dog (EP, 2025) -->
-        <ol class="tracks static">
-          <li class="track">
+        <!--
+          PLAYABLE TRACKLIST
+          Put the MP3s in a folder called "audio" in your GitHub repository, named exactly:
+          audio/01-intro.mp3, audio/02-bighorn.mp3, audio/03-dog.mp3, audio/04-some.mp3, audio/05-sirens.mp3
+        -->
+        <ol class="tracks playable">
+          <li class="track" data-src="audio/01-intro.mp3">
             <span class="t-num">01</span>
-            <div class="t-body"><div class="t-title">Intro</div></div>
+            <div class="t-body"><div class="t-title">Intro</div><div class="t-prog" aria-hidden="true"><span></span></div></div>
+            <span class="t-time" aria-hidden="true"></span>
+            <button class="play" type="button" aria-label="Play Intro"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           </li>
-          <li class="track">
+          <li class="track" data-src="audio/02-bighorn.mp3">
             <span class="t-num">02</span>
-            <div class="t-body"><div class="t-title">Bighorn</div></div>
+            <div class="t-body"><div class="t-title">Bighorn</div><div class="t-prog" aria-hidden="true"><span></span></div></div>
+            <span class="t-time" aria-hidden="true"></span>
+            <button class="play" type="button" aria-label="Play Bighorn"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           </li>
-          <li class="track">
+          <li class="track" data-src="audio/03-dog.mp3">
             <span class="t-num">03</span>
-            <div class="t-body"><div class="t-title">Dog</div></div>
+            <div class="t-body"><div class="t-title">Dog</div><div class="t-prog" aria-hidden="true"><span></span></div></div>
+            <span class="t-time" aria-hidden="true"></span>
+            <button class="play" type="button" aria-label="Play Dog"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           </li>
-          <li class="track">
+          <li class="track" data-src="audio/04-some.mp3">
             <span class="t-num">04</span>
-            <div class="t-body"><div class="t-title">Some</div></div>
+            <div class="t-body"><div class="t-title">Some</div><div class="t-prog" aria-hidden="true"><span></span></div></div>
+            <span class="t-time" aria-hidden="true"></span>
+            <button class="play" type="button" aria-label="Play Some"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           </li>
-          <li class="track">
+          <li class="track" data-src="audio/05-sirens.mp3">
             <span class="t-num">05</span>
-            <div class="t-body"><div class="t-title">Sirens</div></div>
+            <div class="t-body"><div class="t-title">Sirens</div><div class="t-prog" aria-hidden="true"><span></span></div></div>
+            <span class="t-time" aria-hidden="true"></span>
+            <button class="play" type="button" aria-label="Play Sirens"><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           </li>
         </ol>
-
-        <!-- Bandcamp player for the Dog EP (plays full tracks) -->
-        <div class="embeds">
-          <iframe title="Dog EP on Bandcamp" class="bc-player" loading="lazy" seamless src="https://bandcamp.com/EmbeddedPlayer/album=3771588993/size=large/bgcol=ffffff/linkcol=2447b8/tracklist=true/artwork=small/transparent=true/"><a href="https://stefanceara.bandcamp.com/album/dog">Dog by Stefan Ceara</a></iframe>
-        </div>
       </div>
     </div>
 
@@ -361,44 +379,72 @@
 </footer>
 
 <script>
-  // Footer year
   document.querySelectorAll('.yr').forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
-  // Track list: one shared audio player. Tracks with data-src play real audio;
-  // tracks without it just toggle the play/pause look.
+  // Playable tracklist: one shared player, progress bar, time, and auto-advance to the next song.
   (function () {
     var audio = new Audio();
+    audio.preload = 'none';
+    var rows = Array.prototype.slice.call(document.querySelectorAll('.tracks .track[data-src]'));
     var current = null;
-    var tracks = document.querySelectorAll('.track');
 
-    function stop(li) {
+    function fmt(t) { if (!isFinite(t)) return ''; var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
+    function label(li, playing) {
+      var b = li.querySelector('.play'), t = li.querySelector('.t-title').textContent;
+      b.setAttribute('aria-label', (playing ? 'Pause ' : 'Play ') + t);
+    }
+    function reset(li) {
       if (!li) return;
-      li.classList.remove('is-playing');
-      var b = li.querySelector('.play');
-      b.setAttribute('aria-label', b.getAttribute('aria-label').replace('Pause', 'Play'));
+      li.classList.remove('is-playing', 'is-paused');
+      li.querySelector('.t-prog span').style.width = '0';
+      li.querySelector('.t-time').textContent = '';
+      label(li, false);
+    }
+    function start(li) {
+      if (current && current !== li) reset(current);
+      current = li;
+      if (audio.getAttribute('src') !== li.getAttribute('data-src')) audio.src = li.getAttribute('data-src');
+      li.classList.remove('is-paused', 'is-missing');
+      li.classList.add('is-playing');
+      label(li, true);
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () {});
     }
 
-    tracks.forEach(function (li) {
-      var btn = li.querySelector('.play');
-      if (!btn) return;
-      btn.addEventListener('click', function () {
-        var src = li.getAttribute('data-src');
-        if (current === li) {
+    rows.forEach(function (li) {
+      li.querySelector('.play').addEventListener('click', function () {
+        if (current === li && !audio.paused) {
           audio.pause();
-          stop(li);
-          current = null;
-          return;
+          li.classList.remove('is-playing'); li.classList.add('is-paused'); label(li, false);
+        } else {
+          start(li);
         }
-        stop(current);
-        audio.pause();
-        if (src) { audio.src = src; audio.play().catch(function () {}); }
-        li.classList.add('is-playing');
-        btn.setAttribute('aria-label', btn.getAttribute('aria-label').replace('Play', 'Pause'));
-        current = li;
+      });
+      // click the progress bar to jump within the song
+      li.querySelector('.t-prog').addEventListener('click', function (e) {
+        if (current !== li || !isFinite(audio.duration)) return;
+        var r = this.getBoundingClientRect();
+        audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration;
       });
     });
 
-    audio.addEventListener('ended', function () { stop(current); current = null; });
+    audio.addEventListener('timeupdate', function () {
+      if (!current || !isFinite(audio.duration)) return;
+      current.querySelector('.t-prog span').style.width = (audio.currentTime / audio.duration * 100) + '%';
+      current.querySelector('.t-time').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    });
+    audio.addEventListener('ended', function () {
+      var i = rows.indexOf(current);
+      reset(current);
+      if (i > -1 && i < rows.length - 1) start(rows[i + 1]); else current = null;
+    });
+    audio.addEventListener('error', function () {
+      if (!current) return;
+      var li = current; reset(li);
+      li.classList.add('is-missing');
+      li.querySelector('.t-time').textContent = 'File not found';
+      current = null;
+    });
   })();
 </script>
 </body>
